@@ -1,0 +1,11 @@
+---
+- name: Clone dotfiles repository
+  ansible.builtin.git:
+    repo: "{{ dotfiles_repo }}"
+    dest: "{{ dotfiles_repo_local_destination }}"
+- name: Run stow
+  ansible.builtin.shell:
+    chdir:  "{{ dotfiles_repo_local_destination }}"
+    cmd: stow . --verbose=2 --restow --target ~
+  register: stow_result
+  changed_when: 'stow_result.stderr is search("LINK: ")'
